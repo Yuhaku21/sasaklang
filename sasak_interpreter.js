@@ -15,7 +15,6 @@ function evaluate(expr) {
 
 function runLines(lines) {
   let i = 0;
-
   while (i < lines.length) {
     let line = lines[i].trim();
 
@@ -48,60 +47,79 @@ function runLines(lines) {
     // If (lamun)
     if (line.startsWith("lamun")) {
       const condMatch = line.match(/^lamun\s*\((.+)\)\s*{$/);
-      if (condMatch) {
-        const cond = condMatch[1];
-        const block = [];
+      if (!condMatch) throw new Error("Format lamun salah.");
+      const cond = condMatch[1];
+      const block = [];
+      i++;
+      let depth = 1;
+      while (i < lines.length && depth > 0) {
+        const current = lines[i].trim();
+        if (current === "{") depth++;
+        else if (current === "}") depth--;
+        if (depth > 0) block.push(lines[i]);
         i++;
-        let depth = 1;
-        while (i < lines.length && depth > 0) {
-          const current = lines[i].trim();
-          if (current === "{") depth++;
-          else if (current === "}") depth--;
-          if (depth > 0) block.push(lines[i]);
-          i++;
-        }
+      }
 
-        const conditionTrue = evaluate(cond);
-        if (conditionTrue) {
-          runLines(block);
+      const conditionTrue = evaluate(cond);
+      if (conditionTrue) {
+        runLines(block);
 
-          // Skip saklain block
-          while (i < lines.length) {
-            const next = lines[i].trim();
-            if (next.startsWith("saklain")) {
-              i++; // skip line with saklain {
-              let depth = 1;
-              while (i < lines.length && depth > 0) {
-                const l = lines[i].trim();
-                if (l === "{") depth++;
-                else if (l === "}") depth--;
-                i++;
-              }
-            } else {
-              break;
+        // Skip all genti and saklain blocks
+        while (i < lines.length) {
+          const next = lines[i].trim();
+          if (next.startsWith("genti") || next.startsWith("saklain")) {
+            i++;
+            let depth = 1;
+            while (i < lines.length && depth > 0) {
+              const l = lines[i].trim();
+              if (l === "{") depth++;
+              else if (l === "}") depth--;
+              i++;
             }
-          }
-        } else {
-          // Check saklain
-          if (i < lines.length && lines[i].trim().startsWith("saklain")) {
-            const elseHeader = lines[i].trim();
-            if (!elseHeader.endsWith("{")) throw new Error("saklain harus diikuti dengan {");
+          } else break;
+        }
+      } else {
+        let executed = false;
+        while (i < lines.length) {
+          const nextLine = lines[i].trim();
+          if (nextLine.startsWith("genti")) {
+            const gentiMatch = nextLine.match(/^genti\s*\((.+)\)\s*{$/);
+            if (!gentiMatch) throw new Error("Format genti salah.");
+            const gentiCond = gentiMatch[1];
+            const gentiBlock = [];
+            i++;
+            let depth = 1;
+            while (i < lines.length && depth > 0) {
+              const l = lines[i].trim();
+              if (l === "{") depth++;
+              else if (l === "}") depth--;
+              if (depth > 0) gentiBlock.push(lines[i]);
+              i++;
+            }
+            if (!executed && evaluate(gentiCond)) {
+              runLines(gentiBlock);
+              executed = true;
+            }
+          } else if (nextLine.startsWith("saklain")) {
             const elseBlock = [];
             i++;
             let depth = 1;
             while (i < lines.length && depth > 0) {
-              const current = lines[i].trim();
-              if (current === "{") depth++;
-              else if (current === "}") depth--;
+              const l = lines[i].trim();
+              if (l === "{") depth++;
+              else if (l === "}") depth--;
               if (depth > 0) elseBlock.push(lines[i]);
               i++;
             }
-            runLines(elseBlock);
+            if (!executed) runLines(elseBlock);
+            break;
+          } else {
+            break;
           }
         }
-
-        continue;
       }
+
+      continue;
     }
 
     throw new Error("Baris tidak dikenali: " + line);

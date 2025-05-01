@@ -25,17 +25,27 @@ leka("Halo Dunia!");
 leka("Halo " + namaDepan);
 ```
 
-## 3. 🧠 Percabangan (if-else)
+## 3. 🧠 Percabangan (if - else - else if)
 
-Gunakan `lamun (kondisi) { ... }` sebagai `if`, dan `saklain { ... }` sebagai `else`.
+Gunakan:
+
+- `lamun` untuk `if`
+- `genti` untuk `else if`
+- `saklain` untuk `else`
 
 **Contoh:**
 
 ```sasak
-lamun (umur >= 17) {
-    leka("Dewasa");
+pire nilai = 75;
+
+lamun (nilai >= 90) {
+    leka("Sangat Baik");
+} genti (nilai >= 75) {
+    leka("Baik");
+} genti (nilai >= 60) {
+    leka("Cukup");
 } saklain {
-    leka("Bocah");
+    leka("Kurang");
 }
 ```
 

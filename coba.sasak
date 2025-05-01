@@ -1,4 +1,45 @@
-pire Angka1 = 1;
-pire Angka2 = 2;
-pire hasil = Angka1 + Angka2;
-leka(hasil);
+// Sebuah perusahaan bernama PT. 
+// Maju Jaya memberikan bonus bulanan kepada karyawannya berdasarkan kinerja. 
+// Kinerja diukur dari jumlah proyek yang diselesaikan dalam sebulan.
+
+// Variabel aran(const) & pire(let)
+aran namaKaryawan = "Farhan";
+pire gajiPokok =  4000000;
+pire  jumlahProyek = 5;
+
+// Panggil Variabel
+leka("Nama Karyawan: " + namaKaryawan);
+leka("Jumlah Project: " + jumlahProyek);
+
+// Gaji Bonus
+lamun (0 >= jumlahProyek){
+    leka("Tidak mendapatkan bonus");
+}
+genti (3 >= jumlahProyek){
+    leka("Gaji bonus: " + 500000);
+}
+genti (jumlahProyek <= 6){
+    leka("Gaji bonus: " + 1000000);
+}
+saklain{
+    leka("Gaji bonus: " + 2000000);
+}
+
+
+// Total Gaji
+pire totalGaji = 0;
+lamun (0 >= jumlahProyek){
+    leka("Tidak mendapatkan bonus");
+}
+genti (3 >= jumlahProyek){
+    pire totalGaji = gajiPokok + 500000;
+}
+genti (jumlahProyek <= 6){
+    pire totalGaji = gajiPokok + 1000000;
+}
+saklain{
+    pire totalGaji = gajiPokok + 2000000;
+}
+
+leka("Total gaji: " + totalGaji);
+
