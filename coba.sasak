@@ -1,0 +1,4 @@
+pire Angka1 = 1;
+pire Angka2 = 2;
+pire hasil = Angka1 + Angka2;
+leka(hasil);
